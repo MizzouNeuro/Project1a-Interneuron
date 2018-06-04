@@ -1,0 +1,127 @@
+/**********************************************************************
+How to Use This Graphic Library
+	0. dont change/delete/add anything here, except you are sure with your modification
+	1. copy it in the same folder as your main hoc file,
+		then include this in your main hoc file by using {load_file("graphic_library.hoc")}
+	2. Use Commands in your hoc file as:
+		Plot1V("CellA") -- plot only CellA.soma.v(.5)
+		Plot2V("CellA","CellB") -- plot both CellA.soma.v(.5) and CellA.soma.v(.5)
+		Plot1CaPool("CellA") -- plot CellA.soma.cai(.5)
+		Plot1CaPool("CellB") -- plot CellB.soma.cai(.5)
+***********************************************************************/
+{load_file("nrngui.hoc")}
+
+strdef tstr0, tstr1,tstr2,tstr3
+strdef MainBoxTitle
+MainBoxTitle = "Nair Lab - University of Missouri - Single Neuron Modeling (Banks)"
+SubVBoxNum = 3
+SubDeckNum = 2
+objref MainHBoxObj,SubVBoxObj[SubVBoxNum]
+objref SubDeckObj[SubDeckNum]
+
+objref MainHBoxObj2,SubVBoxObj2[SubVBoxNum]
+objref SubDeckObj2[SubDeckNum]
+
+
+
+proc Plot1V() {
+	sprint(tstr1,"%s.%s.v(.5)",$s1, $s2)
+	newPlot(0,tstop,-80,60)
+	graphItem.save_name("graphList[0].")
+	graphList[0].append(graphItem)
+	graphItem.addexpr(tstr1,3,1)
+	
+	sprint(tstr1,"%s.%s.v",$s1,$s2)
+	sprint(tstr2,"tstr3 = units(&%s)",tstr1)
+	execute(tstr2)
+	sprint(tstr1, "%s Voltage (%s)",$s1, tstr3)
+	graphItem.label(.08,.925,tstr1)
+}
+
+proc PlotI() { 
+	sprint(tstr1,"%s.%s.%s(.5)",$s1,$s2,$s3)
+	newPlot(0,tstop,-2,2)
+	graphItem.save_name("graphList[2].")
+	graphList[2].append(graphItem)
+	graphItem.addexpr(tstr1,2,1)
+	
+	sprint(tstr1,"%s.%s.%s",$s1,$s2,$s3)
+	sprint(tstr2,"tstr3 = units(&%s)",tstr1)
+	execute(tstr2)
+	sprint(tstr1, "%s Current (%s)", $s3, tstr3)
+	graphItem.label(.08,.925,tstr1)
+}
+
+//MainHBoxObj ->SubVBoxObj ->SubDeckObj
+proc allInOneBoxSpiking() { local i
+	
+	MainHBoxObj = new HBox()
+	for i=0,SubVBoxNum-1 SubVBoxObj[i] = new VBox()
+	for i=0,SubDeckNum-1 SubDeckObj[i] = new Deck()
+	
+	SubDeckObj[0].intercept(1)
+		xpanel(" ")
+			xlabel("----PLOTS IN THE LEFT PANEL----")
+		xpanel(0)
+	SubDeckObj[0].intercept(0)
+	SubDeckObj[1].intercept(1)
+		
+	SubDeckObj[1].intercept(0)
+	//////// SubVBoxes ////////
+	SubVBoxObj[0].intercept(1)
+		Plot1V($s1,"soma")
+		Plot1V($s1,"dend")
+		//SubDeckObj[0].map()
+		SubDeckObj[0].flip_to(0)
+	SubVBoxObj[0].intercept(0)
+	
+	SubVBoxObj[1].intercept(1)
+		$o2.soma nrnsecmenu(.5,1)
+	SubVBoxObj[1].intercept(0)
+	
+	SubVBoxObj[2].intercept(1)
+		nrncontrolmenu()
+		nrnpointmenu($o3)
+	SubVBoxObj[2].intercept(0)
+	
+	MainHBoxObj.intercept(1)
+		for i=0,SubVBoxNum-1 SubVBoxObj[i].map()
+	MainHBoxObj.intercept(0)
+	MainHBoxObj.map(MainBoxTitle,0,0,1000,600)
+	
+	//allInOneBoxCurrents($s1, $o2, $o3)
+}
+
+proc allInOneBoxCurrents() { local i
+
+	MainHBoxObj2 = new HBox()
+	for i=0,SubVBoxNum-1 SubVBoxObj2[i] = new VBox()
+	for i=0,SubDeckNum-1 SubDeckObj2[i] = new Deck()
+	
+	SubDeckObj2[0].intercept(1)
+		xpanel(" ")
+			xlabel("----PLOTS IN THE LEFT PANEL----")
+		xpanel(0)
+	SubDeckObj2[0].intercept(0)
+	SubDeckObj2[1].intercept(1)
+		
+	SubDeckObj2[1].intercept(0)
+	//////// SubVBoxes ////////
+	SubVBoxObj2[0].intercept(1)
+		PlotI($s1,$s2,"ina_nainter")
+		SubDeckObj2[0].flip_to(0)
+	SubVBoxObj2[0].intercept(0)
+	
+	SubVBoxObj2[1].intercept(1)
+		PlotI($s1,$s2,"ik_kdrinter")
+	SubVBoxObj2[1].intercept(0)
+	
+	SubVBoxObj2[2].intercept(1)
+		PlotI($s1,$s2,"il_leakinter")
+	SubVBoxObj2[2].intercept(0)
+	
+	MainHBoxObj2.intercept(1)
+		for i=0,SubVBoxNum-1 SubVBoxObj2[i].map()
+	MainHBoxObj2.intercept(0)
+	MainHBoxObj2.map(MainBoxTitle,0,0,1000,300)
+}
