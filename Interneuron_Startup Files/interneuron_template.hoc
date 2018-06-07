@@ -45,7 +45,7 @@ begintemplate InterneuronCell
 		soma {
 			cm = 1		    // (microF/cm2)
 			Ra = 150*22.5	// (ohm-cm)
-			Rm = 20000	    // (ohm-cm2)
+			Rm = 30000	    // (ohm-cm2)
 			
 			insert leakinter
 			glbar_inter_leakinter = 1/Rm // (siemens/cm2)
@@ -72,7 +72,7 @@ begintemplate InterneuronCell
 			gnabar_nainter = 0.025	// (siemens/cm2)
 
 			ek = -80		// (mV)
-			gkdrbar_kdrinter = 0.005 // (siemens/cm2) 
+			gkdrbar_kdrinter = 0.014 // (siemens/cm2) 
 			
 		}
 
@@ -81,7 +81,7 @@ begintemplate InterneuronCell
 			gnabar_nainter = 0.010	// (siemens/cm2)
 
 			ek = -80		// (mV)
-			gkdrbar_kdrinter = 0.001 // (siemens/cm2)
+			gkdrbar_kdrinter = 0.004 // (siemens/cm2)
 			
 			//insert ca_ion
 			//eca = 120
