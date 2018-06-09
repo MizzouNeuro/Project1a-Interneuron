@@ -77,6 +77,7 @@ proc allInOneBoxSpiking() { local i
 	
 	SubVBoxObj[1].intercept(1)
 		$o2.soma nrnsecmenu(.5,1)
+		$o2.dend nrnsecmenu(.5,1)
 	SubVBoxObj[1].intercept(0)
 	
 	SubVBoxObj[2].intercept(1)
